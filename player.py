@@ -149,6 +149,22 @@ class Player:
         """ Otherwise return true"""
         return True
 
+    def score_potential(self, pawns_num_steps):
+        """ Returns many opponents may be replaced for a given choice """
+        assert self.can_update_all(pawns_num_steps)
+        completes, kills = 0, 0
+        for pawn_id_, num_steps_ in enumerate(pawns_num_steps):
+            if self.in_progress[pawn_id_].can_complete(num_steps_):
+                """ on completion """
+                completes += 1
+                continue
+            new_position = self.in_progress[pawn_id_].get_position(num_steps_)
+            if self.squares[new_position].can_score(self.in_progress[pawn_id_]):
+                """ on a kill """
+                kills += 1
+        """ Score is determined by number of kills and completes """
+        return kills, completes
+
     def update_all(self, pawns_num_steps):
         assert self.can_update_all(pawns_num_steps)
         """ Create a local copy, as the pawns in progress it prone to change """

@@ -67,9 +67,23 @@ class Game:
                 # print('Permutations:', permutations_)
                 # print('Filtered permutations:', filtered_permutations_)
                 if filtered_permutations_:
-                    """ If some moves exists, then choose one at random and apply """
-                    chosen_permutation_ = random.choice(filtered_permutations_)
-                    # print('Chosen Permutation:', chosen_permutation_)
+                    """ Take a greedy decision based on scoring potential """
+                    """ GREEDY SOLUTION """
+                    all_kills, all_completes = [], []
+                    for permutation_ in filtered_permutations_:
+                        kills, completes = player.score_potential(permutation_)
+                        all_kills.append(kills)
+                        all_completes.append(completes)
+                    if any(kills_ > 0 for kills_ in all_kills):
+                        print("GREEDY RESULTING IN KILL [KILLS:", all_kills, "]")
+                        chosen_permutation_ = filtered_permutations_[all_kills.index(max(all_kills))]
+                    elif any(completes_ > 0 for completes_ in all_completes):
+                        print("GREEDY RESULTING IN COMPLETIONS [COMPLETIONS:", all_completes, "]")
+                        chosen_permutation_ = filtered_permutations_[all_completes.index(max(all_completes))]
+                    else:
+                        """ If some moves exists, then choose one at random and apply """
+                        chosen_permutation_ = random.choice(filtered_permutations_)
+                        # print('Chosen Permutation:', chosen_permutation_)
                     player.update_all(chosen_permutation_)
 
             if player.player_win():
