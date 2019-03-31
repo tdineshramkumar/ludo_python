@@ -9,26 +9,36 @@ class GameGUI:
     NUM_BOXES = 6  # Indicates the number of boxes on a side
     TOTAL_BOXES = NUM_BOXES * 2 + 3
     WIDTH = BOX_WIDTH * TOTAL_BOXES
-    FPS = 1
+    FPS = 10
 
     def __draw_player__(self, player):
+
+        if player.player_id == 0:
+            left = GameGUI.NUM_BOXES + 1
+            top = GameGUI.NUM_BOXES + 2
+        else:
+            left = GameGUI.NUM_BOXES + 1
+            top = GameGUI.NUM_BOXES
+        box_width = GameGUI.BOX_WIDTH
+        square_rect = pygame.Rect(left * box_width, top * box_width, box_width, box_width)
+
         def __draw__(_player):
-            if _player.player_id == 0:
-                left = GameGUI.NUM_BOXES + 1
-                top = GameGUI.NUM_BOXES + 2
-            else:
-                left = GameGUI.NUM_BOXES + 1
-                top = GameGUI.NUM_BOXES
+
+            assert _player == player
+            # if player.any_yet_to_start():
+            #     cur_num_players = player.num_yet_to_start()
+            # else:
+            #     cur_num_players = 0
+            # if cur_num_players != num_players:
             if player.any_yet_to_start():
-                box_width = GameGUI.BOX_WIDTH
-                square_rect = pygame.Rect(left * box_width, top * box_width, box_width, box_width)
                 player_color = RED if player.player_id == 0 else BLUE
                 pygame.draw.ellipse(self.screen, player_color, square_rect)
-                yet_to_start = player.num_yet_to_start()
-                if yet_to_start > 1:
-                    self.__draw_text__(square_rect, str(yet_to_start))
+                num_players = player.num_yet_to_start()
+                if num_players > 1:
+                    self.__draw_text__(square_rect, str(num_players))
+            else:
+                pygame.draw.rect(self.screen, WHITE, square_rect)
                 self.rectangle_list.append(square_rect)
-
         __draw__(player)
 
         def __handler__(_player):

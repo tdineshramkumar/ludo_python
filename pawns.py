@@ -3,8 +3,7 @@ class Pawn:
     PROGRESS = 1
     COMPLETE = 2
 
-    def __init__(self, player, num_squares):
-        print(num_squares)
+    def __init__(self, player, num_squares, constrained_num_squares):
         """ Initialize a Pawn with a player and number of total squares on the track,
             Initially pawn at BEGIN state and cannot be updated unless 'started'. Then on updating position,
             Pawn moves till end of track, one more step results in completion.
@@ -13,6 +12,9 @@ class Pawn:
         self.status = Pawn.BEGIN
         self.position = 0
         self.num_squares = num_squares
+        """ Constrained initial squares, the constraint is removed after first kill """
+        self.constrained = True
+        self.constrained_num_squares = constrained_num_squares
 
     def get_player(self):
         return self.player
@@ -48,10 +50,29 @@ class Pawn:
         if self.status != Pawn.PROGRESS:
             " Status must be progress for update "
             return False
-        if self.position + num_steps <= self.num_squares:
+        """ Not only can move till constraint squares"""
+        if self.position + num_steps <= self.constrained_num_squares:
             " If after num_steps, well within range "
             return True
         return False
+
+    def update_player_constraint(self):
+        """ This function resets the constraint to maximum, so that pawn can proceed,
+        call this function after a kill """
+        if self.constrained:
+            """ propagate it once only """
+            print("------------------------------------------\n" * 3)
+            print("PLAYER CONSTRAINT REMOVED !!!")
+            print("------------------------------------------\n" * 3)
+            self.player.remove_constraints()
+            # self.constrained_num_squares = self.num_squares
+            # self.constrained = False
+
+    def remove_constraint(self):
+        """ This function is called by the player """
+        print("PAWN CONSTRAINT REMOVED")
+        self.constrained_num_squares = self.num_squares
+        self.constrained = False
 
     def update(self, num_steps):
         assert self.can_update(num_steps)

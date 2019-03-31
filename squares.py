@@ -73,6 +73,8 @@ class Square(AbstractSquare):
             """ So its best to update player segregation of pawns """
             self.pawn.get_player().__separate_pawns_on_status__()
             self.pawn = pawn
+            """ Remove constraint on the player of the new pawn """
+            self.pawn.update_player_constraint()
         """ Call event handler """
         self.call_change_handler()
 

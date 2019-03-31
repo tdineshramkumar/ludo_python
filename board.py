@@ -6,6 +6,7 @@ class Board:
     NUM_HUB_SQUARES = 8
     NUM_START_SQUARES = 5
     NUM_END_SQUARES = 6
+    NUM_CONSTRAINED_SQUARES = 54
 
     def __init__(self, num_players):
         assert num_players > 0

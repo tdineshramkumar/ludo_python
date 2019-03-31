@@ -3,12 +3,12 @@ from collections import Counter
 
 
 class Player:
-    def __init__(self, player_id, num_pawns, squares):
+    def __init__(self, player_id, num_pawns, squares, num_constrained_squares):
         self.num_pawns = num_pawns
         self.player_id = player_id
         self.num_squares = len(squares)
         self.squares = squares
-        self.pawns = [Pawn(self, self.num_squares) for _ in range(num_pawns)]
+        self.pawns = [Pawn(self, self.num_squares, num_constrained_squares) for _ in range(num_pawns)]
         self.on_pawn_status_change_handler = None
         self.__separate_pawns_on_status__()
 
@@ -26,6 +26,10 @@ class Player:
         self.in_progress = [pawn for pawn in self.pawns if pawn.in_progress()]
         self.is_complete = [pawn for pawn in self.pawns if pawn.is_complete()]
         assert len(self.yet_to_start) + len(self.in_progress) + len(self.is_complete) == self.num_pawns
+
+    def remove_constraints(self):
+        for pawn in self.pawns:
+            pawn.remove_constraint()
 
     def any_yet_to_start(self):
         """ Returns true if any pawn is yet to start """
